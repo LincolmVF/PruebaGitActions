@@ -1,0 +1,23 @@
+name: Verificación HTML básica
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-html:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v3
+
+      - name: Verificar archivos HTML
+        uses: Cyb3r-Jak3/html-check@v1.2.0
+        with:
+          directory: ./ # Cambia si tus HTML están en otra carpeta
+
+      - name: Mostrar mensaje final
+        run: echo "Verificación completada correctamente"
+
