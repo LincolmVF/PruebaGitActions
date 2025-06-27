@@ -1,4 +1,4 @@
-name: Verificación HTML básica
+name: CI para HTML simple
 
 on:
   push:
@@ -13,11 +13,16 @@ jobs:
       - name: Clonar repositorio
         uses: actions/checkout@v3
 
-      - name: Verificar archivos HTML
-        uses: Cyb3r-Jak3/html-check@v1.2.0
+      - name: Instalar Node.js
+        uses: actions/setup-node@v3
         with:
-          directory: ./ # Cambia si tus HTML están en otra carpeta
+          node-version: '18'
 
-      - name: Mostrar mensaje final
-        run: echo "Verificación completada correctamente"
+      - name: Instalar htmlhint
+        run: npm install -g htmlhint
 
+      - name: Verificar archivos HTML
+        run: htmlhint . --ext .html
+
+      - name: Fin del proceso
+        run: echo "✅ Verificación HTML terminada"
