@@ -1,17 +1,24 @@
-name: Verificar archivos HTML
+name: Validar HTML con htmlhint
 
 on:
   push:
-    paths:
-      - '**.html'
+    branches: [main]
 
 jobs:
-  mensaje-html:
+  validar:
     runs-on: ubuntu-latest
 
     steps:
       - name: Clonar repositorio
         uses: actions/checkout@v3
 
-      - name: Imprimir mensaje en consola
-        run: echo "✅ Archivos HTML detectados. Todo está correcto."
+      - name: Instalar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Instalar htmlhint
+        run: npm install -g htmlhint
+
+      - name: Validar HTML
+        run: htmlhint . --ext .html
