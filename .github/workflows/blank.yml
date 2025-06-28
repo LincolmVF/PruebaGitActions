@@ -21,4 +21,4 @@ jobs:
         run: npm install -g htmlhint
 
       - name: Validar HTML
-        run: htmlhint . --ext .html
+        run: htmlhint . # ← sin --ext
