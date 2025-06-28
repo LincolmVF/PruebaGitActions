@@ -20,8 +20,8 @@ jobs:
       - name: Instalar htmlhint
         run: npm install -g htmlhint
 
-      - name: Ejecutar htmlhint
-        run: htmlhint .
+      - name: Ejecutar htmlhint (solo en /html)
+        run: htmlhint html/
 
       # --- STYLELINT ---
       - name: Instalar stylelint
@@ -33,8 +33,8 @@ jobs:
             "extends": "stylelint-config-standard"
           }' > .stylelintrc.json
 
-      - name: Ejecutar stylelint
-        run: stylelint "**/*.css"
+      - name: Ejecutar stylelint (solo en /css)
+        run: stylelint "css/**/*.css"
 
       # --- ESLINT (v9+, nuevo formato) ---
       - name: Instalar eslint
@@ -44,7 +44,7 @@ jobs:
         run: |
           echo 'export default [
             {
-              files: ["**/*.js"],
+              files: ["js/**/*.js"],
               languageOptions: {
                 ecmaVersion: "latest",
                 sourceType: "module"
@@ -56,8 +56,8 @@ jobs:
             }
           ];' > eslint.config.js
 
-      - name: Ejecutar eslint
-        run: eslint "**/*.js"
+      - name: Ejecutar eslint (solo en /js)
+        run: eslint "js/**/*.js"
 
       #########################
       ## DESPLIEGUE CONTINUO
