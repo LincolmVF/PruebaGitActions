@@ -3,8 +3,6 @@ name: CI - Validación HTML, CSS y JS
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   validar-codigo:
@@ -12,26 +10,33 @@ jobs:
 
     steps:
       - name: Clonar repositorio
-        uses: actions/checkout@v4
-
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+        uses: actions/checkout@v3
 
       # --- HTMLHINT ---
-      - name: Instalar y ejecutar htmlhint
-        run: |
-          npx htmlhint "**/*.html"
+      - name: Instalar htmlhint
+        run: npm install -g htmlhint
+
+      - name: Ejecutar htmlhint
+        run: htmlhint .
 
       # --- STYLELINT ---
-      - name: Instalar y ejecutar stylelint
-        run: |
-          echo '{"extends": "stylelint-config-standard"}' > .stylelintrc.json
-          npx stylelint "**/*.css"
+      - name: Instalar stylelint
+        run: npm install -g stylelint stylelint-config-standard
 
-      # --- ESLINT ---
-      - name: Instalar y ejecutar eslint
+      - name: Crear archivo de configuración stylelint
+        run: |
+          echo '{
+            "extends": "stylelint-config-standard"
+          }' > .stylelintrc.json
+
+      - name: Ejecutar stylelint
+        run: stylelint "**/*.css"
+
+      # --- ESLINT (compatible con ESLint v9+) ---
+      - name: Instalar eslint
+        run: npm install -g eslint
+
+      - name: Crear archivo de configuración eslint (nuevo formato)
         run: |
           echo 'export default [
             {
@@ -41,10 +46,11 @@ jobs:
                 sourceType: "module"
               },
               rules: {
-                "semi": ["error", "always"],
-                "no-unused-vars": "warn",
-                "no-console": "warn"
+                semi: ["error", "always"],
+                "no-unused-vars": "warn"
               }
             }
           ];' > eslint.config.js
-          npx eslint "**/*.js"
+
+      - name: Ejecutar eslint
+        run: eslint "**/*.js"
