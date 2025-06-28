@@ -18,7 +18,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
       # --- HTMLHINT ---
       - name: Instalar y ejecutar htmlhint
@@ -28,12 +27,8 @@ jobs:
       # --- STYLELINT ---
       - name: Instalar y ejecutar stylelint
         run: |
-          npx stylelint "**/*.css" --config-basedir .
-        env:
-          STYLELINT_CONFIG: |
-            {
-              "extends": "stylelint-config-standard"
-            }
+          echo '{"extends": "stylelint-config-standard"}' > .stylelintrc.json
+          npx stylelint "**/*.css"
 
       # --- ESLINT ---
       - name: Instalar y ejecutar eslint
