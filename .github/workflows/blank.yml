@@ -1,24 +1,50 @@
-name: Validar HTML con htmlhint
+name: CI - Validación HTML, CSS y JS
 
 on:
   push:
     branches: [main]
 
 jobs:
-  validar:
+  validar-codigo:
     runs-on: ubuntu-latest
 
     steps:
       - name: Clonar repositorio
         uses: actions/checkout@v3
 
-      - name: Instalar Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
+      # --- HTMLHINT ---
       - name: Instalar htmlhint
         run: npm install -g htmlhint
 
-      - name: Validar HTML
-        run: htmlhint . # ← sin --ext
+      - name: Ejecutar htmlhint
+        run: htmlhint .
+
+      # --- STYLELINT ---
+      - name: Instalar stylelint
+        run: npm install -g stylelint stylelint-config-standard
+
+      - name: Crear archivo de configuración stylelint
+        run: |
+          echo '{
+            "extends": "stylelint-config-standard"
+          }' > .stylelintrc.json
+
+      - name: Ejecutar stylelint
+        run: stylelint "**/*.css"
+
+      # --- ESLINT ---
+      - name: Instalar eslint
+        run: npm install -g eslint
+
+      - name: Crear archivo de configuración eslint
+        run: |
+          echo '{
+            "env": {
+              "browser": true,
+              "es2021": true
+            },
+            "extends": "eslint:recommended"
+          }' > .eslintrc.json
+
+      - name: Ejecutar eslint
+        run: eslint "**/*.js"
