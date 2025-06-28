@@ -1,16 +1,20 @@
-name: CI - Validación HTML, CSS y JS
+name: CI y CD - Validación + Despliegue
 
 on:
   push:
     branches: [main]
 
 jobs:
-  validar-codigo:
+  validar-y-desplegar:
     runs-on: ubuntu-latest
 
     steps:
       - name: Clonar repositorio
         uses: actions/checkout@v3
+
+      #########################
+      ## VALIDACIÓN DEL CÓDIGO
+      #########################
 
       # --- HTMLHINT ---
       - name: Instalar htmlhint
@@ -32,11 +36,11 @@ jobs:
       - name: Ejecutar stylelint
         run: stylelint "**/*.css"
 
-      # --- ESLINT (compatible con ESLint v9+) ---
+      # --- ESLINT (v9+, nuevo formato) ---
       - name: Instalar eslint
         run: npm install -g eslint
 
-      - name: Crear archivo de configuración eslint (nuevo formato)
+      - name: Crear archivo de configuración eslint
         run: |
           echo 'export default [
             {
@@ -54,3 +58,13 @@ jobs:
 
       - name: Ejecutar eslint
         run: eslint "**/*.js"
+
+      #########################
+      ## DESPLIEGUE CONTINUO
+      #########################
+
+      - name: Subir a GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
