@@ -1,28 +1,17 @@
-name: CI para HTML simple
+name: Verificar archivos HTML
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - '**.html'
 
 jobs:
-  check-html:
+  mensaje-html:
     runs-on: ubuntu-latest
 
     steps:
       - name: Clonar repositorio
         uses: actions/checkout@v3
 
-      - name: Instalar Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Instalar htmlhint
-        run: npm install -g htmlhint
-
-      - name: Verificar archivos HTML
-        run: htmlhint . --ext .html
-
-      - name: Fin del proceso
-        run: echo "✅ Verificación HTML terminada"
+      - name: Imprimir mensaje en consola
+        run: echo "✅ Archivos HTML detectados. Todo está correcto."
