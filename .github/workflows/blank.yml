@@ -3,6 +3,8 @@ name: CI - Validación HTML, CSS y JS
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   validar-codigo:
@@ -10,33 +12,31 @@ jobs:
 
     steps:
       - name: Clonar repositorio
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
       # --- HTMLHINT ---
-      - name: Instalar htmlhint
-        run: npm install -g htmlhint
-
-      - name: Ejecutar htmlhint
-        run: htmlhint .
+      - name: Instalar y ejecutar htmlhint
+        run: |
+          npx htmlhint "**/*.html"
 
       # --- STYLELINT ---
-      - name: Instalar stylelint
-        run: npm install -g stylelint stylelint-config-standard
-
-      - name: Crear archivo de configuración stylelint
+      - name: Instalar y ejecutar stylelint
         run: |
-          echo '{
-            "extends": "stylelint-config-standard"
-          }' > .stylelintrc.json
+          npx stylelint "**/*.css" --config-basedir .
+        env:
+          STYLELINT_CONFIG: |
+            {
+              "extends": "stylelint-config-standard"
+            }
 
-      - name: Ejecutar stylelint
-        run: stylelint "**/*.css"
-
-      # --- ESLINT (compatible con ESLint v9+) ---
-      - name: Instalar eslint
-        run: npm install -g eslint
-
-      - name: Crear archivo de configuración eslint (nuevo formato)
+      # --- ESLINT ---
+      - name: Instalar y ejecutar eslint
         run: |
           echo 'export default [
             {
@@ -46,11 +46,10 @@ jobs:
                 sourceType: "module"
               },
               rules: {
-                semi: ["error", "always"],
-                "no-unused-vars": "warn"
+                "semi": ["error", "always"],
+                "no-unused-vars": "warn",
+                "no-console": "warn"
               }
             }
           ];' > eslint.config.js
-
-      - name: Ejecutar eslint
-        run: eslint "**/*.js"
+          npx eslint "**/*.js"
