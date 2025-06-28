@@ -32,19 +32,25 @@ jobs:
       - name: Ejecutar stylelint
         run: stylelint "**/*.css"
 
-      # --- ESLINT ---
+      # --- ESLINT (compatible con ESLint v9+) ---
       - name: Instalar eslint
         run: npm install -g eslint
 
-      - name: Crear archivo de configuración eslint
+      - name: Crear archivo de configuración eslint (nuevo formato)
         run: |
-          echo '{
-            "env": {
-              "browser": true,
-              "es2021": true
-            },
-            "extends": "eslint:recommended"
-          }' > .eslintrc.json
+          echo 'export default [
+            {
+              files: ["**/*.js"],
+              languageOptions: {
+                ecmaVersion: "latest",
+                sourceType: "module"
+              },
+              rules: {
+                semi: ["error", "always"],
+                "no-unused-vars": "warn"
+              }
+            }
+          ];' > eslint.config.js
 
       - name: Ejecutar eslint
         run: eslint "**/*.js"
